@@ -36,7 +36,7 @@ export default async function (req, res) {
 
   console.log(completion);
 
-  return res.json({ completion: completion.data.choices[0].text });
+  return res.json({ result: completion.data.choices[0].text });
 }
 
 function generatePrompt(health) {
