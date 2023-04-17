@@ -1,4 +1,5 @@
 import { Configuration, OpenAIApi } from "openai";
+import {NextResponse} from "next/server";
 
 const apiKey = process.env.OPENAI_API_KEY || "";
 
@@ -7,24 +8,26 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export default async function (req, res) {
+export const config = {
+  edge: 'runtime'
+}
+
+export default async function (req) {
   if (!apiKey) {
-    res.status(500).json({
+    return NextResponse.json({
       error: {
         message: "OpenAI API key not configured, please follow instructions in README.md",
       }
-    });
-    return;
+    }).status(500)
   }
 
   const health = req.body.health || '';
   if (health.trim().length === 0) {
-    res.status(400).json({
+    return NextResponse.json({
       error: {
         message: "Please enter a valid Health Condition, Sypmtom, Disease or Supplement ",
       }
-    });
-    return;
+    }).status(400);
   }
 
   try {
@@ -34,19 +37,20 @@ export default async function (req, res) {
       temperature: 0,
       max_tokens: 1000,
     });
-    res.status(200).json({ result: completion.data.choices[0].text });
+
+    return NextResponse.json({ result: completion.data.choices[0].text });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
       console.error(error.response.status, error.response.data);
-      res.status(error.response.status).json(error.response.data);
+      return NextResponse.json(error.response.data).status(error.response.status)
     } else {
       console.error(`Error with OpenAI API request: ${error.message}`);
-      res.status(500).json({
+      return NextResponse.json({
         error: {
           message: 'An error occurred during your request.',
         }
-      });
+      }).status(500)
     }
   }
 }
