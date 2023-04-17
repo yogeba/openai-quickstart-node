@@ -41,16 +41,8 @@ export default async function (req) {
     return NextResponse.json({ result: completion.data.choices[0].text });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
-    if (error.response) {
-      console.error(error.response.status, error.response.data);
-      return NextResponse.json(error.response.data).status(error.response.status)
-    } else {
-      console.error(`Error with OpenAI API request: ${error.message}`);
-      return NextResponse.json({
-        error: {
-          message: 'An error occurred during your request.',
-        }
-      }).status(500)
+    console.log(error);
+    return NextResponse.json({ error }).status(500);
     }
   }
 }
