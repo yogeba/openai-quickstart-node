@@ -60,7 +60,7 @@ export default function Home() {
           <input
             type="text"
             name="health"
-            placeholder="Enter an health"
+            placeholder="Enter an health condition, symptom, disease or outcome"
             value={healthInput}
             onChange={(e) => setHealthInput(e.target.value)}
           />
