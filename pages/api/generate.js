@@ -1,5 +1,5 @@
 import { Configuration, OpenAIApi } from "openai";
-import { NextResponse} from "next/server";
+import { NextResponse } from "next/server";
 
 const apiKey = process.env.OPENAI_API_KEY || "";
 
@@ -9,24 +9,26 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export const config = {
-  edge: 'runtime'
-}
+  edge: "runtime",
+};
 
 export default async function (req) {
   if (!apiKey) {
     return NextResponse.json({
       error: {
-        message: "OpenAI API key not configured, please follow instructions in README.md",
-      }
-    }).status(500)
+        message:
+          "OpenAI API key not configured, please follow instructions in README.md",
+      },
+    }).status(500);
   }
 
-  const health = req.body.health || '';
+  const health = req.body.health || "";
   if (health.trim().length === 0) {
     return NextResponse.json({
       error: {
-        message: "Please enter a valid Health Condition, Sypmtom, Disease or Supplement ",
-      }
+        message:
+          "Please enter a valid Health Condition, Sypmtom, Disease or Supplement ",
+      },
     }).status(400);
   }
 
@@ -39,11 +41,9 @@ export default async function (req) {
     });
 
     return NextResponse.json({ result: completion.data.choices[0].text });
-  } catch(error) {
-    // Consider adjusting the error handling logic for your use case
+  } catch (error) {
     console.log(error);
     return NextResponse.json({ error }).status(500);
-    }
   }
 }
 
@@ -60,7 +60,7 @@ How could diet affect ${health}?
 Are there any other treatments for ${health}?
 What causes ${health}?
 The latest research on ${health}?
-List 10 supplements for ${health}  `
+List 10 supplements for ${health}  `;
 }
 
 export { generatePrompt };
