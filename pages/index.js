@@ -24,12 +24,17 @@ export default function Home() {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
 
-      const results = JSON.parse(data.result);
+      let results;
+      if (Array.isArray(data.result)) {
+      results = data.result;
+      } else {
+      results = JSON.parse(data.result);
+      }
+
       const elements = results.map((item, index) => {
-        console.log(item.Question)
         return (
         <div key={index}>
-          <h6>{item.Question}</h6>
+          <h4>{item.Question}</h4>
           <p>{item.Answer}</p>
         </div>
         )

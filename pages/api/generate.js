@@ -51,7 +51,8 @@ export default async function (req, res) {
 
 function generatePrompt(health) {
   return `
-Answer the following questions about ${health}  in an array of JSON objects :
+answer the following questions about ${health}  in an array of JSON objects:
+
 What is ${health}?
 What are the main signs and symptoms of ${health}?
 How is ${health} diagnosed?
@@ -61,7 +62,7 @@ How could diet affect ${health}?
 Are there any other treatments for ${health}?
 What causes ${health}?
 The latest research on ${health}?
-write 10 supplements for ${health}  `
+List 10 supplements for ${health}  `
 }
 
 export { generatePrompt };
