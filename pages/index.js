@@ -3,18 +3,20 @@ import { useState } from "react";
 import styles from "./index.module.css";
 
 export default function Home() {
-  const [animalInput, setAnimalInput] = useState("");
+  const [healthInput, setHealthInput] = useState("");
   const [result, setResult] = useState();
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(event) {
     event.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ animal: animalInput }),
+        body: JSON.stringify({ health: healthInput }),
       });
 
       const data = await response.json();
@@ -22,36 +24,51 @@ export default function Home() {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
 
-      setResult(data.result);
-      setAnimalInput("");
+      const results = JSON.parse(data.result);
+      const elements = results.map((item, index) => {
+        console.log(item.Question)
+        return (
+        <div key={index}>
+          <h3>{item.Question}</h3>
+          <p>{item.Answer}</p>
+        </div>
+        )
+      })
+
+      setResult(elements);
+      setHealthInput("");
     } catch(error) {
-      // Consider implementing your own error handling logic here
       console.error(error);
       alert(error.message);
     }
+    setLoading(false);
   }
+
+  
 
   return (
     <div>
       <Head>
-        <title>OpenAI Quickstart</title>
+        <title>Supplement Search</title>
         <link rel="icon" href="/dog.png" />
       </Head>
 
       <main className={styles.main}>
         <img src="/dog.png" className={styles.icon} />
-        <h3>Name my pet</h3>
+        <h3>Search my Supplement</h3>
         <form onSubmit={onSubmit}>
           <input
             type="text"
-            name="animal"
-            placeholder="Enter an animal"
-            value={animalInput}
-            onChange={(e) => setAnimalInput(e.target.value)}
+            name="health"
+            placeholder="Enter an health"
+            value={healthInput}
+            onChange={(e) => setHealthInput(e.target.value)}
           />
-          <input type="submit" value="Generate names" />
+          <input type="submit" value="Generate" />
         </form>
-        <div className={styles.result}>{result}</div>
+        <div className={styles.result}>
+          {result}
+        </div>
       </main>
     </div>
   );
