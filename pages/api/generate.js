@@ -8,10 +8,6 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export const config = {
-  edge: "runtime",
-};
-
 export default async function (req) {
   if (!apiKey) {
     return NextResponse.json({
@@ -42,7 +38,7 @@ export default async function (req) {
 
     console.log(completion);
 
-    return NextResponse.json({ result: completion.data.choices[0].text });
+    return NextResponse.json({ result: completion.data.choices });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error });
