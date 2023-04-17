@@ -29,7 +29,7 @@ export default function Home() {
         console.log(item.Question)
         return (
         <div key={index}>
-          <h3>{item.Question}</h3>
+          <h6>{item.Question}</h6>
           <p>{item.Answer}</p>
         </div>
         )
