@@ -19,7 +19,7 @@ export default async function (req) {
         message:
           "OpenAI API key not configured, please follow instructions in README.md",
       },
-    }).status(500);
+    });
   }
 
   const health = req.body.health || "";
@@ -29,7 +29,7 @@ export default async function (req) {
         message:
           "Please enter a valid Health Condition, Sypmtom, Disease or Supplement ",
       },
-    }).status(400);
+    });
   }
 
   try {
@@ -40,10 +40,12 @@ export default async function (req) {
       max_tokens: 1000,
     });
 
+    console.log(completion);
+
     return NextResponse.json({ result: completion.data.choices[0].text });
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error }).status(500);
+    return NextResponse.json({ error });
   }
 }
 
