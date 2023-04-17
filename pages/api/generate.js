@@ -1,17 +1,14 @@
 import { Configuration, OpenAIApi } from "openai";
 
-
-export const config = {
-  runtime: "edge",
-};
+const apiKey = process.env.OPENAI_API_KEY || "";
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: apiKey,
 });
 const openai = new OpenAIApi(configuration);
 
 export default async function (req, res) {
-  if (!configuration.apiKey) {
+  if (!apiKey) {
     res.status(500).json({
       error: {
         message: "OpenAI API key not configured, please follow instructions in README.md",
