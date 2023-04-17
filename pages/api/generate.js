@@ -1,5 +1,4 @@
 import { Configuration, OpenAIApi } from "openai";
-import { NextResponse } from "next/server";
 
 const apiKey = process.env.OPENAI_API_KEY || "";
 
@@ -8,9 +7,9 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export default async function (req) {
+export default async function (req, res) {
   if (!apiKey) {
-    return NextResponse.json({
+    return res.json({
       error: {
         message:
           "OpenAI API key not configured, please follow instructions in README.md",
@@ -20,7 +19,7 @@ export default async function (req) {
 
   const health = req.body.health || "";
   if (health.trim().length === 0) {
-    return NextResponse.json({
+    return res.json({
       error: {
         message:
           "Please enter a valid Health Condition, Sypmtom, Disease or Supplement ",
@@ -28,21 +27,16 @@ export default async function (req) {
     });
   }
 
-  try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: generatePrompt(health),
-      temperature: 0,
-      max_tokens: 1000,
-    });
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: generatePrompt(health),
+    temperature: 0,
+    max_tokens: 1000,
+  });
 
-    console.log(completion);
+  console.log(completion);
 
-    return NextResponse.json({ result: completion.data.choices });
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json({ error });
-  }
+  return res.json({ completion: completion.data.choices[0].text });
 }
 
 function generatePrompt(health) {
