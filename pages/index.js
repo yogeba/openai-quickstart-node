@@ -19,11 +19,11 @@ export default function Home() {
         body: JSON.stringify({ health: healthInput }),
       });
 
-      const data = await response.json();
       if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
+        throw new Error(`Request failed with status ${response.status}`);
       }
 
+      const data = await response.json();
       let results;
       if (Array.isArray(data.result)) {
       results = data.result;
