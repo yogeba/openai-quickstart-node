@@ -26,30 +26,28 @@ export default function Home() {
       const data = await response.json();
       let results;
       if (Array.isArray(data.result)) {
-      results = data.result;
+        results = data.result;
       } else {
-      results = JSON.parse(data.result);
+        results = JSON.parse(data.result);
       }
 
       const elements = results.map((item, index) => {
         return (
-        <div key={index}>
-          <h4>{item.Question}</h4>
-          <p>{item.Answer}</p>
-        </div>
-        )
-      })
+          <div key={index}>
+            <h4>{item.Question}</h4>
+            <p>{item.Answer}</p>
+          </div>
+        );
+      });
 
       setResult(elements);
       setHealthInput("");
-    } catch(error) {
+    } catch (error) {
       console.error(error);
       alert(error.message);
     }
     setLoading(false);
   }
-
-  
 
   return (
     <div>
@@ -71,10 +69,14 @@ export default function Home() {
           />
           <input type="submit" value="Generate" />
         </form>
-        <div className={styles.result}>
-          {result}
-        </div>
+        <div className={styles.result}>{result}</div>
       </main>
+      <a
+        target="_blank"
+        href="https://www.amazon.in/dp/B01DQV8BIM?ref=nb_sb_ss_w_as-reorder-t1_k0_1_5&amp;amp=&amp;crid=3OWGXHNXRNVI3&amp;sprefix=ashwa&amp;th=1&_encoding=UTF8&tag=examine0b-21&linkCode=ur2&linkId=2bf50aa798fc8c91cd1effa0fb7ddd3d&camp=3638&creative=24630"
+      >
+        ash
+      </a>
     </div>
   );
 }
