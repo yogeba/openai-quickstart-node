@@ -16,8 +16,8 @@ const Nav = () => {
 
   const handleToggle = () => setShow(!show);
 
-  const bg = useColorModeValue("white", "gray.800");
-  const color = useColorModeValue("gray.800", "white");
+  const bg = useColorModeValue("brand.primary", "gray.800");
+  const color = useColorModeValue("white", "white");
 
   return (
     <Box
@@ -31,8 +31,13 @@ const Nav = () => {
       boxShadow="sm"
     >
       <Flex justify="space-between" align="center" px={4} py={3}>
-        <Box>
-          <img src="/logo.png" alt="Logo" />
+        <Box maxHeight="60px" maxWidth="60px">
+          <img
+            src="/white_transparent.svg"
+            alt="Logo"
+            height="100%"
+            width="100%"
+          />
         </Box>
         <IconButton
           icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -48,6 +53,8 @@ const Nav = () => {
           justifyContent="center"
           w="full"
           maxW="4xl"
+          fontFamily="ABeeZee, sans-serif"
+          fontWeight="bold"
         >
           <Box ml={10} mr={5}>
             <a href="#what-we-do">What We Do</a>
@@ -86,14 +93,14 @@ const Nav = () => {
                 <img src="/logo.png" alt="Logo" />
               </Box>
               <IconButton
-                icon={<CloseIcon />}
+                icon={<CloseIcon php Copy code />}
                 onClick={onClose}
                 variant="ghost"
                 color={color}
                 aria-label="Toggle menu"
               />
             </Box>
-            <Box mb={2}>
+            <Box mb={2} fontFamily="ABeeZee, sans-serif" fontWeight="bold">
               <Box mb={2}>
                 <a href="#what-we-do">What We Do</a>
               </Box>
