@@ -3,51 +3,15 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import { Disclosure } from "@headlessui/react";
 import { FaLeaf, FaChevronDown } from "react-icons/fa";
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+// import Image from "next/image";
 
 export default function Home() {
   const [healthInput, setHealthInput] = useState("");
   const [result, setResult] = useState();
   const [loading, setLoading] = useState(false);
   const [healthOutput, setHealthOutput] = useState("");
-
-  // async function onSubmit(event) {
-  //   // event.preventDefault();
-  //   // setLoading(true);
-  //   // try {
-  //   //   const response = await fetch("/api/generate", {
-  //   //     method: "POST",
-  //   //     headers: {
-  //   //       "Content-Type": "application/json",
-  //   //     },
-  //   //     body: JSON.stringify({ health: healthInput }),
-  //   //   });
-
-  //   //   if (response.status !== 200) {
-  //   //     throw new Error(`Request failed with status ${response.status}`);
-  //   //   }
-
-  //   //   const data = await response.json();
-  //   //   let results;
-  //   //   if (Array.isArray(data.result)) {
-  //   //     results = data.result;
-  //   //   } else {
-  //   //     results = JSON.parse(data.result);
-  //   //   }
-
-  //   //   const elements = results.map((item, index) => {
-  //   //     return (
-
-  //   //     );
-  //   //   });
-
-  //   //   setResult(elements);
-  //   //   setHealthInput("");
-  //   // } catch (error) {
-  //   //   console.error(error);
-  //   //   alert(error.message);
-  //   // }
-  //   // setLoading(false);
-  // }
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -62,6 +26,7 @@ export default function Home() {
     });
 
     if (!response.ok) {
+      toast.error(`Request failed with status ${response.status}`);
       throw new Error(response.statusText);
     }
 
@@ -90,9 +55,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <ToastContainer />
       <Head>
-        <title>Supplement Search</title>
-        <link rel="icon" href="/dog.png" />
+        <title>Health Align</title>
+        {/* <Image
+          src="/dog.png"
+          alt="Health Align Favicon"
+          width={32}
+          height={32}
+        /> */}
         <link href="/dist/output.css" rel="stylesheet"></link>
         <link
           rel="stylesheet"
@@ -109,7 +80,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900 flex items-center">
               <FaLeaf className="mr-2" />
-              Supplement Search
+              Health Align
             </h1>
             {/* Add navigation links or additional information here */}
           </div>
@@ -117,12 +88,12 @@ export default function Home() {
       </header>
 
       <main className="py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <h1 className="text-4xl font-bold text-center text-gray-900">
-              Supplement Search
+            <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-900">
+              Health Align
             </h1>
-            <p className="mt-2 text-center text-gray-600">
+            <p className="mt-2 text-center text-gray-600 text-lg">
               Self-evaluate your optimal health needs
             </p>
             <div className="mt-8 bg-white shadow sm:rounded-lg">
@@ -140,6 +111,7 @@ export default function Home() {
                     value={healthInput}
                     onChange={(e) => setHealthInput(e.target.value)}
                     className="mt-1 block w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
+                    placeholder="e.g., Insomnia, Inflammation, Heart Health"
                   />
                 </label>
                 <button
@@ -204,6 +176,14 @@ export default function Home() {
             {/* Add more supplementary information sections here */}
           </aside>
         </div>
+        <footer className="bg-white shadow mt-10">
+          <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+            <p className="text-center text-gray-500 text-sm">
+              &copy; {new Date().getFullYear()} Health Align. All rights
+              reserved.
+            </p>
+          </div>
+        </footer>
       </main>
     </div>
   );
