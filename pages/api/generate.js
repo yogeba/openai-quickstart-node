@@ -1,7 +1,7 @@
 // pages/api/generate.js
 import { fetchHealthData, generatePrompt } from "../../lib/openai";
 
-import { OpenAIStream } from "../../lib/OpenAIStream";
+import { OpenAIStream } from "../../lib/openaiStream";
 
 export const config = {
   runtime: "edge",
