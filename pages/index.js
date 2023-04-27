@@ -1,6 +1,6 @@
 // pages/index.js
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Disclosure } from "@headlessui/react";
 import { FaLeaf, FaChevronDown } from "react-icons/fa";
 
@@ -8,64 +8,85 @@ export default function Home() {
   const [healthInput, setHealthInput] = useState("");
   const [result, setResult] = useState();
   const [loading, setLoading] = useState(false);
+  const [healthOutput, setHealthOutput] = useState("");
+
+  // async function onSubmit(event) {
+  //   // event.preventDefault();
+  //   // setLoading(true);
+  //   // try {
+  //   //   const response = await fetch("/api/generate", {
+  //   //     method: "POST",
+  //   //     headers: {
+  //   //       "Content-Type": "application/json",
+  //   //     },
+  //   //     body: JSON.stringify({ health: healthInput }),
+  //   //   });
+
+  //   //   if (response.status !== 200) {
+  //   //     throw new Error(`Request failed with status ${response.status}`);
+  //   //   }
+
+  //   //   const data = await response.json();
+  //   //   let results;
+  //   //   if (Array.isArray(data.result)) {
+  //   //     results = data.result;
+  //   //   } else {
+  //   //     results = JSON.parse(data.result);
+  //   //   }
+
+  //   //   const elements = results.map((item, index) => {
+  //   //     return (
+
+  //   //     );
+  //   //   });
+
+  //   //   setResult(elements);
+  //   //   setHealthInput("");
+  //   // } catch (error) {
+  //   //   console.error(error);
+  //   //   alert(error.message);
+  //   // }
+  //   // setLoading(false);
+  // }
 
   async function onSubmit(event) {
     event.preventDefault();
-    setLoading(true);
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ health: healthInput }),
-      });
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        health: healthInput,
+      }),
+    });
 
-      if (response.status !== 200) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-      let results;
-      if (Array.isArray(data.result)) {
-        results = data.result;
-      } else {
-        results = JSON.parse(data.result);
-      }
-
-      const elements = results.map((item, index) => {
-        return (
-          <Disclosure
-            key={index}
-            className="bg-gray-100 rounded-md shadow mb-4"
-          >
-            {({ open }) => (
-              <>
-                <Disclosure.Button className="flex justify-between items-center w-full px-4 py-2 text-xl font-semibold text-left text-gray-900 bg-gray-100 rounded-md focus:outline-none focus:ring focus:border-blue-300">
-                  {item.Question}
-                  <FaChevronDown
-                    className={`${
-                      open ? "transform rotate-180" : ""
-                    } transition-transform duration-200`}
-                  />
-                </Disclosure.Button>
-                <Disclosure.Panel className="px-4 pt-2 pb-4 text-gray-600">
-                  {item.Answer}
-                </Disclosure.Panel>
-              </>
-            )}
-          </Disclosure>
-        );
-      });
-
-      setResult(elements);
-      setHealthInput("");
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
+    if (!response.ok) {
+      throw new Error(response.statusText);
     }
-    setLoading(false);
+
+    const data = response.body;
+    if (!data) {
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      const chunkValue = decoder.decode(value);
+      // console.log(chunkValue);
+      setHealthOutput((prev) => prev + chunkValue);
+    }
   }
+
+  useEffect(() => {
+    console.log(healthOutput);
+    console.log(healthOutput.split("[SEP]").filter((x) => x.endsWith("}")));
+  }, [healthOutput]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -130,12 +151,39 @@ export default function Home() {
                 </button>
               </form>
             </div>
-            {result && (
+            {healthOutput && (
               <div className="mt-8 bg-white shadow sm:rounded-lg p-6">
                 <h3 className="text-2xl font-semibold text-gray-900">
                   Results
                 </h3>
-                <div className="mt-4 space-y-4">{result}</div>
+                <div className="mt-4 space-y-4">
+                  {healthOutput
+                    .split("[SEP]")
+                    .filter((x) => x.endsWith("}"))
+                    .map((x) => JSON.parse(x))
+                    .map((x) => (
+                      <Disclosure
+                        key={x.question || x.Question}
+                        className="bg-gray-100 rounded-md shadow mb-4"
+                      >
+                        {({ open }) => (
+                          <>
+                            <Disclosure.Button className="flex justify-between items-center w-full px-4 py-2 text-xl font-semibold text-left text-gray-900 bg-gray-100 rounded-md focus:outline-none focus:ring focus:border-blue-300">
+                              {x.question || x.Question}
+                              <FaChevronDown
+                                className={`${
+                                  open ? "transform rotate-180" : ""
+                                } transition-transform duration-200`}
+                              />
+                            </Disclosure.Button>
+                            <Disclosure.Panel className="px-4 pt-2 pb-4 text-gray-600">
+                              {x.answer || x.Answer}
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
+                    ))}
+                </div>
               </div>
             )}
           </div>
